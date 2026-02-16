@@ -52,6 +52,11 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
 
+    <!-- Preconnect to Google domains for faster video loading -->
+    <link rel="preconnect" href="https://drive.google.com">
+    <link rel="preconnect" href="https://lh3.googleusercontent.com">
+    <link rel="preconnect" href="https://drive.usercontent.google.com">
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -448,7 +453,8 @@
                     <button onclick="nextItem()" class="btn-3d btn-secondary">▶</button>
                 </div>
 
-                <button id="orderStartBtn" onclick="showOrderForm()" class="btn-3d" style="width: 100%; justify-content: center;">
+                <!-- Order button permanently hidden (orders go through 1.html) -->
+                <button id="orderStartBtn" onclick="showOrderForm()" class="btn-3d" style="width: 100%; justify-content: center; display: none;">
                     🛒 Order Now
                 </button>
             </div>
@@ -458,7 +464,8 @@
             </div>
         </div>
 
-        <div id="orderFormView" class="modal-section">
+        <!-- Order form section permanently hidden (orders go through 1.html) -->
+        <div id="orderFormView" class="modal-section" style="display: none !important;">
             <div class="preview-box" style="border-top: 5px solid var(--primary);">
                 <h2 class="text-center mb-20">📝 Order Form</h2>
                 <form id="orderForm" onsubmit="sendOrder(event)">
@@ -619,7 +626,7 @@
             } else {
                 const highRes = file.thumbnailLink ? file.thumbnailLink.replace('=s220', '=s1000') : '';
                 container.innerHTML = `<img src="${highRes}" style="width:100%; max-height:400px; object-fit:contain; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">`;
-                orderBtn.style.display = 'flex';
+                orderBtn.style.display = 'none'; // Always hidden now
             }
         }
 
@@ -641,7 +648,7 @@
             }
         }
 
-        // --- ORDER LOGIC ---
+        // --- ORDER LOGIC (kept but never called because buttons are hidden) ---
         function showOrderForm() {
             document.getElementById('detailView').style.display = 'none';
             showSection('orderFormView');
