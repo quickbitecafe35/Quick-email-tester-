@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Mobile Specs Explorer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        /* Header & Search */
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 { margin: 0; font-size: 2.5rem; letter-spacing: -0.5px; }
+        header p { margin: 10px 0 25px 0; opacity: 0.9; font-size: 1.1rem; }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            outline: none;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        #searchInput:focus { box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+        /* Main Content & Grid */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Product Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-img-wrapper {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .card img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .quick-specs { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
+        .quick-specs p { margin: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;}
+        .quick-specs span { font-weight: 600; color: var(--text-main); }
+
+        .btn-details {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn-details:hover { background-color: #1d4ed8; }
+
+        /* Modal (Popup) for Full Details */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            border-radius: 16px;
+            overflow-y: auto;
+            position: relative;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px; height: 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .modal-header { display: flex; gap: 20px; margin-bottom: 20px; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 20px;}
+        .modal-header img { width: 120px; height: auto; object-fit: contain; }
+        .modal-header h2 { margin: 0; color: var(--primary-color); font-size: 1.8rem; }
+        
+        .full-specs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .spec-item {
+            background: #f9fafb;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .spec-item strong { display: block; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;}
+        .spec-item span { font-size: 1rem; color: var(--text-main); }
+
+        .loading, .no-results { text-align: center; font-size: 1.2rem; color: var(--text-muted); grid-column: 1 / -1; padding: 40px; }
+
+        @media (min-width: 600px) {
+            .full-specs-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fas fa-mobile-alt"></i> Mobile Specs Explorer</h1>
+        <p>Find complete specifications of thousands of mobile phones instantly!</p>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by brand or model (e.g., Samsung Galaxy...)">
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="results"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading mobile database...</div></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal"><i class="fas fa-times"></i></button>
+            <div id="modalBody">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        let mobilesData = [];
+        const resultsContainer = document.getElementById('results');
+        const searchInput = document.getElementById('searchInput');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalBody = document.getElementById('modalBody');
+        const closeModal = document.getElementById('closeModal');
+
+        // 1. Load Data
+        fetch('mobiles.json')
+            .then(response => response.json())
+            .then(data => {
+                mobilesData = data;
+                resultsContainer.innerHTML = '';
+                // Initially display first 20 phones
+                displayResults(mobilesData.slice(0, 20));
+            })
+            .catch(error => {
+                resultsContainer.innerHTML = '<div class="no-results">Error loading database. Please ensure mobiles.json is present.</div>';
+            });
+
+        // 2. Search Functionality
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (query === '') {
+                displayResults(mobilesData.slice(0, 20));
+                return;
+            }
+            const filtered = mobilesData.filter(phone => 
+                (phone.brand && phone.brand.toLowerCase().includes(query)) || 
+                (phone.model && phone.model.toLowerCase().includes(query))
+            ).slice(0, 30); // Max 30 to keep UI fast
+            displayResults(filtered);
+        });
+
+        // 3. Display Cards
+        function displayResults(phones) {
+            resultsContainer.innerHTML = '';
+            if (phones.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No mobiles found. Try another search.</div>';
+                return;
+            }
+
+            phones.forEach((phone, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const imgSrc = phone.img_url ? phone.img_url : 'https://via.placeholder.com/200x200?text=No+Image';
+                
+                card.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <img src="${imgSrc}" loading="lazy" alt="${phone.brand} ${phone.model}">
+                    </div>
+                    <h3>${phone.brand} ${phone.model}</h3>
+                    <div class="quick-specs">
+                        <p>RAM: <span>${phone.RAM || '-'}</span></p>
+                        <p>Storage: <span>${phone.internal_memory || '-'}</span></p>
+                        <p>Battery: <span>${phone.battery || '-'}</span></p>
+                    </div>
+                    <button class="btn-details" onclick="openModal(${index})">View Full Specs</button>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        // 4. Handle Modal (Show all details)
+        window.openModal = function(index) {
+            // Get the specific phone based on current search view
+            const query = searchInput.value.toLowerCase().trim();
+            let currentList = query === '' ? mobilesData.slice(0, 20) : mobilesData.filter(phone => 
+                (phone.brand && phone.brand.toLowerCase().includes(query)) || 
+                (phone.model && phone.model.toLowerCase().includes(query))
+            ).slice(0, 30);
+
+            const phone = currentList[index];
+            const imgSrc = phone.img_url ? phone.img_url : 'https://via.placeholder.com/200x200?text=No+Image';
+
+            // Dynamically generate all spec items, ignoring empty ones
+            let specsHTML = '';
+            const fieldsToIgnore = ['img_url', 'brand', 'model']; // Already in header
+            
+            for (const [key, value] of Object.entries(phone)) {
+                if (value && value.trim() !== '' && !fieldsToIgnore.includes(key)) {
+                    // Make key names beautiful (e.g. "primary_camera" -> "Primary Camera")
+                    const cleanKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    specsHTML += `
+                        <div class="spec-item">
+                            <strong>${cleanKey}</strong>
+                            <span>${value}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            modalBody.innerHTML = `
+                <div class="modal-header">
+                    <img src="${imgSrc}" alt="${phone.brand}">
+                    <div>
+                        <h2>${phone.brand} ${phone.model}</h2>
+                        <p style="color: #6b7280; margin-top:5px;">Announced: ${phone.announced || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="full-specs-grid">
+                    ${specsHTML}
+                </div>
+            `;
+            
+            modalOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        };
+
+        // Close Modal logic
+        closeModal.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal on clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
