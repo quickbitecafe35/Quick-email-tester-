@@ -1,0 +1,32 @@
+[
+  {
+    "brand": "Acer",
+    "model": "Iconia Talk S",
+    "network_technology": "GSM / HSPA / LTE",
+    "2G_bands": "GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2",
+    "3G_bands": "HSDPA 850 / 1900 / 2100",
+    "4G_bands": "LTE band 1(2100)| 3(1800)| 7(2600)| 8(900)| 20(800)",
+    "network_speed": "HSPA 42.2/11.5 Mbps LTE Cat4 150/50 Mbps",
+    "announced": "2016 August",
+    "display_type": "IPS LCD capacitive touchscreen 16M colors",
+    "OS": "Android OS v6.0 (Marshmallow)",
+    "CPU": "Quad-core 1.3 GHz Cortex-A53",
+    "internal_memory": "16/32 GB",
+    "RAM": "2 GB",
+    "primary_camera": "13 MP",
+    "battery": "Removable Li-Ion 3400 mAh battery",
+    "approx_price_EUR": "170",
+    "img_url": "http://cdn2.gsmarena.com/vv/bigpic/acer-iconia-talk-s.jpg"
+  },
+  {
+    "brand": "ZTE",
+    "model": "F101",
+    "network_technology": "GSM / UMTS",
+    "announced": "2009. Released 2009",
+    "RAM": "",
+    "internal_memory": "",
+    "primary_camera": "2 MP",
+    "battery": "Removable Li-Ion 1000 mAh battery",
+    "img_url": "http://cdn2.gsmarena.com/vv/bigpic/zte-f101.jpg"
+  }
+]
